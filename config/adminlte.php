@@ -108,12 +108,28 @@ return [
     */
 
     'menu' => [
-        'MAIN NAVIGATION',
+        //'MAIN NAVIGATION',
         [
-            'text'        => 'Home',
-            'url'         => 'admin',
-            'icon'        => 'home'
+            'text' => 'Home',
+            'url' => 'admin',
+            'icon' => 'home'
         ],
+        [
+            'text' => 'Financeiro',
+            'icon' => 'money',
+            'submenu' => [
+                [
+                    'text' => 'Saldo',
+                    'url' => 'admin/balance',
+                    'icon' => 'credit-card-alt'
+                ],
+                [
+                    'text' => 'Histórico',
+                    'url' => 'admin/history',
+                    'icon' => 'history'
+                ],
+            ]
+        ]
     ],
 
     /*
@@ -149,7 +165,7 @@ return [
 
     'plugins' => [
         'datatables' => true,
-        'select2'    => true,
-        'chartjs'    => true,
+        'select2' => true,
+        'chartjs' => true,
     ],
 ];
