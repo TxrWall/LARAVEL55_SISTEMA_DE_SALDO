@@ -12,15 +12,21 @@
 @stop
 
 @section('content')
-    <p>Meu Saldo</p>
-
     <div class="box box-solid">
 
         <div class="box-header">
             <a href="{{ route('balance.deposit') }}" class="btn btn-primary"><i class="fa fa-plus-square"></i> Depositar</a>
             @if ($amount > 0)
-                <a href="{{ route('balance.withdraw') }}" class="btn btn-danger"><i class="fa fa-minus-square"></i>
+                <a href="{{ route('balance.withdraw') }}" class="btn btn-danger">
+                    <i class="fa fa-minus-square"></i>
                     Sacar
+                </a>
+            @endif
+
+            @if ($amount > 0)
+                <a href="{{ route('balance.transfer') }}" class="btn btn-info">
+                    <i class="fa fa-exchange"></i>
+                    Transferir
                 </a>
             @endif
         </div>

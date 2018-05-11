@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
+use App\User;
 
 class Balance extends Model
 {
@@ -18,7 +19,7 @@ class Balance extends Model
         $deposit = $this->save();
 
         $history = auth()->user()->history()->create([
-            'id' => 'I',
+            'type' => 'I',
             'amount' => $value,
             'total_before' => $totalBefore,
             'total_after' => $this->amount,
@@ -61,7 +62,7 @@ class Balance extends Model
         $withdraw = $this->save();
 
         $history = auth()->user()->history()->create([
-            'id' => 'O',
+            'type' => 'O',
             'amount' => $value,
             'total_before' => $totalBefore,
             'total_after' => $this->amount,
@@ -86,5 +87,69 @@ class Balance extends Model
             ];
 
         }
+    }
+
+    public function transfer(float $value, User $account) : Array
+    {
+        if ($this->amount < $value) {
+            return [
+                'success' => false,
+                'message' => 'Saldo insuficiente'
+            ];
+        }
+
+        DB::beginTransaction();
+
+
+        /***********************************************************************
+         * Update a logged in user balance
+         ***********************************************************************/
+        $totalBefore = $this->amount ? $this->amount : 0;
+        $this->amount -= number_format($value, 2, '.', '');
+        $transfer = $this->save();
+
+        $history = auth()->user()->history()->create([
+            'type' => 'T',
+            'amount' => $value,
+            'total_before' => $totalBefore,
+            'total_after' => $this->amount,
+            'date' => date('Ymd'),
+            'user_id_transaction' => $account->id
+        ]);
+
+        /***********************************************************************
+         * Update the balance for the one being credited
+         ***********************************************************************/
+        $accountUser = $account->balance()->firstOrCreate([]);
+        $totalBeforeAccount = $accountUser->amount ? $accountUser->amount : 0;
+        $accountUser->amount += number_format($value, 2, '.', '');
+        $transferAccount = $accountUser->save();
+
+        $historyAccount = $account->history()->create([
+            'type' => 'I',
+            'amount' => $value,
+            'total_before' => $totalBeforeAccount,
+            'total_after' => $accountUser->amount,
+            'date' => date('Ymd'),
+            'user_id_transaction' => Auth()->user()->id
+        ]);
+
+        if ($transfer && $history && $transferAccount && $historyAccount) {
+
+            DB::commit();
+
+            return [
+                'success' => true,
+                'message' => 'Sucesso ao transferir'
+            ];
+        }
+
+        DB::rollBack();
+
+        return [
+            'success' => false,
+            'message' => 'Falha ao transferir'
+        ];
+
     }
 }
