@@ -35,6 +35,11 @@ class History extends Model
 
     }
 
+    public function scopeUserAuth($query)
+    {
+        return $query->where('user_id', Auth()->user()->id);
+    }
+
     public function getDateAttribute($value)
     {
         return Carbon::parse($value)->format('d/m/Y');
@@ -48,5 +53,22 @@ class History extends Model
     public function userAccount()
     {
         return $this->belongsTo(User::class, 'user_id_transaction');
+    }
+
+    public function search(Array $data, $totalItensPerPage)
+    {
+        return $this->where(function ($query) use ($data) {
+            if (isset($data['id']))
+                $query->where('id', $data['id']);
+
+            if (isset($data['date']))
+                $query->where('date', $data['date']);
+
+            if (isset($data['type']))
+                $query->where('type', $data['type']);
+        })
+            ->userAuth()
+            ->with('userAccount')
+            ->paginate($totalItensPerPage);
     }
 }

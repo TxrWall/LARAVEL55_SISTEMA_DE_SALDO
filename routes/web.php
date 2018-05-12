@@ -3,7 +3,7 @@
 Route::group(['middleware' => ['auth'], 'namespace' => 'Admin', 'prefix' => 'admin'], function() {
 
     //history
-    Route::post('history', 'BalanceController@searchHistories')->name('history.search');
+    Route::any('history-search', 'BalanceController@searchHistories')->name('history.search');
     Route::get('history', 'BalanceController@history')->name('admin.history');
 
     // transfer
@@ -24,6 +24,9 @@ Route::group(['middleware' => ['auth'], 'namespace' => 'Admin', 'prefix' => 'adm
     Route::get('/', 'AdminController@index')->name('admin');
 });
 
+// index
+Route::post('atualizar-perfil', 'Admin\UserController@profileUpdate')->name('profile.update')->middleware('auth');
+Route::get('meu-perfil', 'Admin\UserController@profile')->name('profile')->middleware('auth');
 
 Route::get('/', 'SiteController@index')->name('home');
 

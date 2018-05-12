@@ -62,7 +62,11 @@
                 </tbody>
             </table>
 
-            {!! $histories->links() !!}
+            @if (isset($formData))
+                {{ $histories->appends($formData)->links() }}
+            @else
+                {{ $histories->links() }}
+            @endif
         </div>
 
     </div>
