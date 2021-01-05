@@ -1,7 +1,7 @@
 <h1>Bank Balance</h1>
 
 <p>
-  <i>PHP Application, using Laravel, that simulates an ATM. Deposits, withdrawals and transfers.</i>
+  <i>PHP Application, using Laravel, which simulates an ATM. Deposits, withdrawals and transfers.</i>
   <br>
 </p>
 
