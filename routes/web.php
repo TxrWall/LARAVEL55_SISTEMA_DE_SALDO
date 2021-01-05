@@ -31,3 +31,11 @@ Route::get('meu-perfil', 'Admin\UserController@profile')->name('profile')->middl
 Route::get('/', 'SiteController@index')->name('home');
 
 Auth::routes();
+
+Auth::routes();
+
+Route::get('/home', 'HomeController@index')->name('home');
+
+Auth::routes();
+
+Route::get('/home', 'HomeController@index')->name('home');
